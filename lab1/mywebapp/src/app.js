@@ -82,6 +82,16 @@ app.get("/health/ready", async (req, res) => {
   }
 });
 
-const server = app.listen(config.server.port, () => {
-  console.log(`App listening on port ${config.server.port}`);
-});
+const hasSystemdSocket =
+  Number(process.env.LISTEN_FDS || "0") >= 1 &&
+  Number(process.env.LISTEN_PID || "0") === process.pid;
+
+if (hasSystemdSocket) {
+  app.listen({ fd: 3 }, () => {
+    console.log("App listening via systemd socket activation");
+  });
+} else {
+  app.listen(config.server.port, () => {
+    console.log(`App listening on port ${config.server.port}`);
+  });
+}
