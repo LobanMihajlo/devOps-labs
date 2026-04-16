@@ -2,7 +2,7 @@ const express = require("express");
 const { Pool } = require("pg");
 const fs = require("fs");
 
-const config = JSON.parse(fs.readFileSync("../config.json", "utf8"));
+const config = JSON.parse(fs.readFileSync("/etc/mywebapp/config.json", "utf8"));
 const app = express();
 const pool = new Pool(config.database);
 
@@ -50,6 +50,25 @@ app.post("/tasks", async (req, res) => {
     "pending",
   ]);
   res.status(201).send("Task Created");
+});
+
+app.post("/tasks/:id/done", async (req, res) => {
+  const id = Number.parseInt(req.params.id, 10);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).send("Invalid task id");
+  }
+
+  const result = await pool.query(
+    "UPDATE tasks SET status = $1 WHERE id = $2 RETURNING id, title, status, created_at",
+    ["done", id],
+  );
+
+  if (result.rowCount === 0) {
+    return res.status(404).send("Task not found");
+  }
+
+  res.status(200).json(result.rows[0]);
 });
 
 app.get("/health/alive", (req, res) => res.status(200).send("OK"));
