@@ -15,17 +15,17 @@ sudo chown app:app /var/lib/app
 
 if ! id "student" &>/dev/null; then
     sudo useradd -m -s /bin/bash student
-    sudo usermod -aG sudo student
     echo "User 'student' created."
 fi
+sudo usermod -aG sudo student
 
 if ! id "teacher" &>/dev/null; then
     sudo useradd -m -s /bin/bash teacher
     echo "teacher:12345678" | sudo chpasswd
     sudo chage -d 0 teacher
-    sudo usermod -aG sudo teacher
     echo "User 'teacher' created."
 fi
+sudo usermod -aG sudo teacher
 
 if ! getent group operator > /dev/null; then
     sudo groupadd operator

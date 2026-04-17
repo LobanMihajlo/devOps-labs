@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 DB_NAME="mywebappdb"
 DB_USER="mywebapp"
