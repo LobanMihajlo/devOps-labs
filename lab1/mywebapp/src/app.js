@@ -8,16 +8,19 @@ const pool = new Pool(config.database);
 
 app.use(express.json());
 
-const sendResponse = (req, res, jsonData, htmlTable) => {
+const sendResponse = (req, res, jsonData, htmlTable, status = 200) => {
   const accept = req.headers.accept || "";
   if (accept.includes("application/json")) {
-    return res.json(jsonData);
+    return res.status(status).json(jsonData);
   }
-  res.send(`<html><body>${htmlTable}</body></html>`);
+  return res
+    .status(status)
+    .type("text/html")
+    .send(`<html><body>${htmlTable}</body></html>`);
 };
 
 app.get("/", (req, res) => {
-  res.send(`
+  res.type("text/html").send(`
         <h1>Task Tracker API</h1>
         <ul>
             <li><a href="/tasks">GET /tasks</a></li>
@@ -45,11 +48,14 @@ app.get("/tasks", async (req, res) => {
 
 app.post("/tasks", async (req, res) => {
   const { title } = req.body;
-  await pool.query("INSERT INTO tasks (title, status) VALUES ($1, $2)", [
-    title,
-    "pending",
-  ]);
-  res.status(201).send("Task Created");
+  const result = await pool.query(
+    "INSERT INTO tasks (title, status) VALUES ($1, $2) RETURNING id, title, status, created_at",
+    [title, "pending"],
+  );
+
+  const createdTask = result.rows[0];
+  const html = `<h1>Task Created</h1><p>ID: ${createdTask.id}</p><p>Title: ${createdTask.title}</p><p>Status: ${createdTask.status}</p><p>Created: ${createdTask.created_at}</p>`;
+  return sendResponse(req, res, createdTask, html, 201);
 });
 
 app.post("/tasks/:id/done", async (req, res) => {
@@ -68,7 +74,9 @@ app.post("/tasks/:id/done", async (req, res) => {
     return res.status(404).send("Task not found");
   }
 
-  res.status(200).json(result.rows[0]);
+  const updatedTask = result.rows[0];
+  const html = `<h1>Task Updated</h1><p>ID: ${updatedTask.id}</p><p>Title: ${updatedTask.title}</p><p>Status: ${updatedTask.status}</p><p>Created: ${updatedTask.created_at}</p>`;
+  return sendResponse(req, res, updatedTask, html, 200);
 });
 
 app.get("/health/alive", (req, res) => res.status(200).send("OK"));

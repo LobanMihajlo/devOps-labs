@@ -11,7 +11,7 @@ cat <<EOF | sudo tee /etc/systemd/system/mywebapp.socket
 Description=Socket for My Web App (N=19)
 
 [Socket]
-ListenStream=$PORT
+ListenStream=127.0.0.1:$PORT
 Service=mywebapp.service
 
 [Install]
