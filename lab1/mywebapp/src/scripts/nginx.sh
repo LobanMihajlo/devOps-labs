@@ -12,12 +12,10 @@ server {
     access_log /var/log/nginx/mywebapp_access.log;
     error_log /var/log/nginx/mywebapp_error.log;
 
-    # Do not expose internal health endpoints through Nginx.
     location ^~ /health/ {
         return 404;
     }
 
-    # Expose root and business endpoints through reverse proxy.
     location / {
         proxy_pass http://127.0.0.1:5000;
         proxy_set_header Host $host;
