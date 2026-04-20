@@ -120,6 +120,12 @@ Minimum tested resources:
 - RAM: 1 GB
 - Disk: 10 GB
 
+Recommended resources:
+
+- CPU: 2 vCPU
+- RAM: 2 GB
+- Disk: 20 GB
+
 ### 3.3 Special OS Install Settings
 
 No special disk layout is required.
@@ -161,7 +167,13 @@ Automation also creates:
 git clone https://github.com/LobanMihajlo/devOps-labs.git
 cd devOps-labs/lab1/mywebapp
 chmod +x setup.sh
-./setup.sh
+DEFAULT_VM_USER=<initial_vm_user> ./setup.sh
+```
+
+Examples:
+
+```bash
+DEFAULT_VM_USER=vboxuser ./setup.sh
 ```
 
 If `git` is missing:
@@ -210,6 +222,15 @@ Expected:
 
 - `student` and `teacher` are in `sudo` group.
 - `operator` can only run allowed service/nginx commands from `/etc/sudoers.d/operator`.
+
+Optional default-user lock check (replace placeholder):
+
+```bash
+sudo passwd -S <initial_vm_user>
+getent passwd <initial_vm_user>
+```
+
+Expected: account is locked and shell is set to `/usr/sbin/nologin`.
 
 ### 4.4 Endpoint functional checks (through nginx)
 
