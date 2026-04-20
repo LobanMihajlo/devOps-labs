@@ -45,15 +45,16 @@ Project location:
 
 ### 2.3 How to Run the Application
 
-Full automated deployment (recommended):
+If repository is already cloned and you are in `lab1/mywebapp`, run:
 
 ```bash
-cd lab1/mywebapp
 chmod +x setup.sh
-./setup.sh
+DEFAULT_VM_USER=<initial_vm_user> ./setup.sh
 ```
 
-What this does:
+Full VM preparation steps (clone + automation run) are documented in section **3.5**.
+
+This command performs complete local deployment on the VM:
 
 1. Installs required packages
 2. Creates users
