@@ -1,0 +1,12 @@
+{
+  "database": {
+    "user": "mywebapp",
+    "host": "db",
+    "database": "mywebappdb",
+    "password": "mywebapp",
+    "port": 5432
+  },
+  "server": {
+    "port": 5000
+  }
+}
