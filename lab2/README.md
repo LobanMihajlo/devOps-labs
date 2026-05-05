@@ -2,6 +2,8 @@
 
 This lab packages the Task Tracker application into three services managed by Docker Compose: a PostgreSQL database, the Node.js application, and an Nginx reverse proxy.
 
+PDF report: [lab2/lab2_Loban_report.pdf](lab2/lab2_Loban_report.pdf)
+
 ## 1. Dockerfile and `docker-compose.yml`
 
 ### `lab2/mywebapp/Dockerfile`
